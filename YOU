@@ -1,0 +1,25 @@
+<?php
+header('Content-Type: application/json');
+
+// إعدادات الموقع
+define('YOUTUBE_API_KEY', 'YOUR_YOUTUBE_API_KEY'); // استبدل بمفتاح YouTube API الخاص بك
+
+// التحقق من وجود استعلام بحث
+if(!isset($_GET['q']) || empty($_GET['q'])) {
+    echo json_encode(['error' => 'يرجى إدخال كلمات البحث']);
+    exit;
+}
+
+$search_query = urlencode(trim($_GET['q']));
+$api_url = "https://www.googleapis.com/youtube/v3/search?part=snippet&q={$search_query}&type=video&maxResults=12&key=" . YOUTUBE_API_KEY;
+
+// جلب النتائج من YouTube API
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $api_url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
+
+// إرجاع النتائج كـ JSON
+echo $response;
+?>
